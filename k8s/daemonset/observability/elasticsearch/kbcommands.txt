@@ -1,0 +1,3 @@
+helm install kibanaesarticle elastic/kibana
+kubectl get pod
+kubectl port-forward svc/kibanaesarticle-kibana 5601:5601
