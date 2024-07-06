@@ -1,0 +1,12 @@
+// Deploy certification manager 
+kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.14.5/cert-manager.yaml
+kubectl get pods -n cert-manager
+
+// Deploy opentelemetry operator
+kubectl apply -f opentelemetry-operator.yaml
+kubectl get crd
+kubectl get ns
+
+// Deploy open telemetry collector and collector in daemon-set configuration
+kubectl apply -f otel-collector.yaml
+kubectl apply -f otel-collector-ds.yaml
