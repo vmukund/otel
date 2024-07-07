@@ -1,0 +1,49 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: java-app
+spec:
+  selector:
+    matchLabels:
+      app: java-app
+  template:
+    metadata:
+      labels:
+        app: java-app
+    spec:
+      containers:
+        - name: java-app
+          image: vmukund24/springapp
+          imagePullPolicy: IfNotPresent
+          ports:
+          - containerPort: 8080
+          env:
+           - name: OTEL_COLLECTOR_ENDPOINT
+             value: "http://otel-collector.default.svc.cluster.local:4317"
+           - name: SERVICE_B
+             value: "java-app:8080"
+#            value: "http://localhost:4317"
+#          - name: OTEL_TRACES_EXPORTER
+#            value: "otlp"
+#          - name: OTEL_RESOURCE_ATTRIBUTES
+#            value: "service.name=java-app"
+          resources:
+            requests:
+                memory: "128Mi"
+                cpu: "250m"
+            limits:
+                memory: "248Mi"
+                cpu: "500m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: java-app
+spec:
+  type: ClusterIP
+  selector:
+    app: java-app
+  ports:
+  - name: app
+    port: 8080
