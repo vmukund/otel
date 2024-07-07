@@ -1,0 +1,64 @@
+receivers:
+  otlp:
+    protocols:
+      grpc:
+      http:
+processors:
+  batch:
+
+exporters:
+  otlp:
+    endpoint: "jaeger-all-in-one:4317"
+    tls:
+       insecure: true
+  debug:
+       verbosity: detailed
+  logging:
+       loglevel: debug
+  elasticsearch/trace:
+       endpoints: 'http://host.docker.internal:9200'
+       traces_index: traces_index
+  elasticsearch/log:
+       endpoints: 'http://host.docker.internal:9200'
+       logs_index: my_log_index
+  zipkin:
+       endpoint: "http://zipkin-all-in-one:9411/api/v2/spans"
+       format: proto
+  prometheus:
+       endpoint: "0.0.0.0:8889"
+       namespace: promexample
+       const_labels:
+          label1: value1
+  azuremonitor:
+       instrumentation_key: 2e13fe39-99b0-4d0f-b4ff-6d918edab6b3
+       connection_string: "InstrumentationKey=2e13fe39-99b0-4d0f-b4ff-6d918edab6b3;IngestionEndpoint=https://centralindia-0.in.applicationinsights.azure.com/;LiveEndpoint=https://centralindia.livediagnostics.monitor.azure.com/;ApplicationId=2b6bd4dc-4c76-4767-811e-b5b3a965b154"
+
+extensions:
+       zpages:
+         endpoint: 0.0.0.0:55679
+       health_check:
+         endpoint: 0.0.0.0:13133
+         path: "/health"
+
+service:
+  extensions: [health_check, zpages]
+  pipelines:
+    traces:
+      receivers:  [otlp]
+      processors: [batch]
+      exporters:  [logging, debug, otlp, zipkin, elasticsearch/trace]
+    metrics:
+      receivers:  [otlp]
+      processors: [batch]
+      exporters:  [logging, prometheus,azuremonitor]
+    logs:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [logging, elasticsearch/log,azuremonitor]
+  telemetry:
+    logs:
+      level: debug
+      encoding: json
+    metrics:
+      level: detailed
+      address: 0.0.0.0:8888
