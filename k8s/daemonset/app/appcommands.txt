@@ -1,0 +1,2 @@
+kubectl apply -f app.yaml
+kubectl port-forward svc/java-app 8080
