@@ -1,0 +1,69 @@
+plugins {
+	id 'java'
+        id 'application'
+	id 'org.springframework.boot' version '3.2.5' 
+	id 'io.spring.dependency-management' version '1.1.4'
+}
+
+group = 'com.example.emittrace'
+version = '0.0.1-SNAPSHOT'
+
+java {
+	sourceCompatibility = '18'
+	}
+
+repositories {
+	mavenCentral()
+}
+
+dependencyManagement {
+imports {
+    mavenBom("io.opentelemetry:opentelemetry-bom:1.1.0")
+    mavenBom("io.opentelemetry.instrumentation:opentelemetry-instrumentation-bom-alpha:1.1.0-alpha")
+  }
+}
+
+dependencies {
+	
+        implementation 'io.opentelemetry:opentelemetry-sdk:1.1.0'
+	implementation 'io.opentelemetry:opentelemetry-api:1.1.0'
+	implementation 'io.opentelemetry:opentelemetry-extension-trace-propagators:1.1.0'
+	
+	implementation 'io.opentelemetry:opentelemetry-sdk-extension-autoconfigure:1.1.0-alpha'
+	implementation 'io.opentelemetry:opentelemetry-sdk-metrics:1.0.1-alpha'
+
+	implementation 'io.opentelemetry:opentelemetry-exporter-otlp-trace:1.1.0'
+	implementation 'io.opentelemetry:opentelemetry-exporter-otlp-metrics:1.1.0-alpha'
+	implementation 'io.opentelemetry:opentelemetry-exporter-otlp:1.1.0'
+	implementation 'io.opentelemetry:opentelemetry-exporter-zipkin:1.1.0'
+
+        implementation 'io.opentelemetry:opentelemetry-extension-annotations:0.14.1'
+	implementation 'io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.3.0'
+
+	implementation 'io.opentelemetry.contrib:opentelemetry-samplers:1.33.0-alpha'
+	implementation 'io.opentelemetry:opentelemetry-sdk-extension-autoconfigure:1.1.0-alpha'
+
+	implementation 'org.aspectj:aspectjtools:1.9.6'
+        implementation 'io.grpc:grpc-netty-shaded:1.37.0' 
+        implementation 'org.codehaus.mojo:aspectj-maven-plugin:1.11'
+	implementation 'com.google.guava:guava:33.2.0-jre'
+
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter:3.2.5'
+
+//	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+
+	runtimeOnly 'io.opentelemetry:opentelemetry-api-metrics:1.1.0-alpha'
+
+}
+
+springBoot {
+  buildInfo {
+  }
+
+application {
+   mainClass.set("com.example.demo.Application")
+}
+  
+}
+
