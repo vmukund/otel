@@ -1,0 +1,6 @@
+javac SyslogSender.java                          // creates Syslogsender.class files
+jar cfve SyslogSender5424.jar SyslogSender SyslogSender.class // creates SyslogSender5424.jar
+docker build -t syslogsender .   // Builds docker image  syslogsender
+
+OR
+java -jar SyslogSender5424.jar // One execute independant jar separately too.
