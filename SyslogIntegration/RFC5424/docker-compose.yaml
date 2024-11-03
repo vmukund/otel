@@ -1,0 +1,21 @@
+version: '2'
+services:
+  # Collector
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib:latest
+    command: ["--config=/etc/collector/otel-config_5424.yaml"]
+    volumes:
+      - .\otel-config_5424.yaml:/etc/collector/otel-config_5424.yaml
+      - .\data\:/data
+    ports:
+     - "4318:4318"   # OTLP http receiver
+     - "54527:54527" # Syslog Receiver
+    network_mode: host
+
+  # syslogclient
+  syslogclient:
+    image: syslogsender:latest
+
+    depends_on:
+      - otel-collector
+    network_mode: host
