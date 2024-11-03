@@ -1,0 +1,45 @@
+extensions:
+  health_check:
+  pprof:
+    endpoint: 127.0.0.1:1777
+  zpages:
+    endpoint: 127.0.0.1:55679
+
+receivers:
+  otlp:
+    protocols:
+      grpc:
+      http:
+  syslog:
+    tcp:
+      listen_address: localhost:54527
+    protocol: rfc5424
+processors:
+  batch:
+
+exporters:
+  debug:
+    verbosity: detailed
+  file:
+    path: ./data/syslogfiles_5424
+    append: true
+
+service:
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [debug]  # Only using debug for now
+
+    metrics:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [debug]  # Only using debug for now
+
+    logs:
+      receivers: [syslog]
+      processors: [batch]
+      exporters: [debug, file]  # File and  debug for now
+
+  extensions: [health_check, pprof, zpages]
+  
