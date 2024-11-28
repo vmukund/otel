@@ -1,0 +1,27 @@
+version: '2'
+services:
+  # Collector
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib:0.98.0
+    command: ["--config=/etc/collector/otel-config_5424.yaml"]
+    container_name: mycollector
+    hostname: myhostname
+  # Specify above container name for socket port of syslog sender application / client
+    volumes:
+      - .\otel-config_5424.yaml:/etc/collector/otel-config_5424.yaml
+      - .\data\:/data
+    ports:
+     - "4318:4318"   # OTLP http receiver
+     - "54527:54527" # Syslog Receiver
+
+  #  network_mode: host
+
+  # syslogclient
+  syslogclient:
+    image: syslogsender1:latest
+    ports:
+     - "8080:8080"   #  http receiver
+    depends_on:
+      - otel-collector
+
+  #  network_mode: "container:mycollector"
